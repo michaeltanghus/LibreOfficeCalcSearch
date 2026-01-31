@@ -1,39 +1,77 @@
-object Form1: TForm1
+object TMainForm: TTMainForm
   Left = 2312
   Height = 322
   Top = 277
   Width = 876
-  Caption = 'Form1'
+  Caption = 'LibreOffice Calc Search'
+  ClientHeight = 322
+  ClientWidth = 876
   Menu = MainMenu1
   LCLVersion = '4.4.0.0'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 322
+    Top = 0
+    Width = 876
+    ActivePage = TabLog
+    Align = alClient
+    TabIndex = 1
+    TabOrder = 0
+    object TabResults: TTabSheet
+      Caption = 'Results'
+    end
+    object TabLog: TTabSheet
+      Caption = 'Log'
+    end
+  end
+  object MemoLog: TMemo
+    Left = 0
+    Height = 322
+    Top = 0
+    Width = 876
+    Align = alClient
+    Lines.Strings = (
+      'MemoLog'
+    )
+    ReadOnly = True
+    ScrollBars = ssAutoVertical
+    TabOrder = 1
+  end
   object MainMenu1: TMainMenu
     Left = 56
     Top = 24
-    object MenuItem1: TMenuItem
+    object MenuItemFile: TMenuItem
       Caption = 'File'
-      object MenuItem4: TMenuItem
+      object MenuItemNewSearch: TMenuItem
         Caption = 'New Search'
+        OnClick = MenuItemNewSearchClick
       end
-      object MenuItem5: TMenuItem
-        Caption = 'OpenSearch'
+      object MenuItemOpenSearch: TMenuItem
+        Caption = 'Open Search'
+        OnClick = MenuItemOpenSearchClick
       end
-      object MenuItem6: TMenuItem
+      object MenuItemSave: TMenuItem
         Caption = 'Save'
+        OnClick = MenuItemSaveClick
       end
-      object MenuItem7: TMenuItem
+      object MenuItemSaveAs: TMenuItem
         Caption = 'Save As'
+        OnClick = MenuItemSaveAsClick
       end
-      object MenuItem8: TMenuItem
+      object MenuItemExport: TMenuItem
         Caption = 'Export'
+        OnClick = MenuItemExportClick
       end
-      object MenuItem9: TMenuItem
+      object MenuItemExit: TMenuItem
         Caption = 'Exit'
+        OnClick = MenuItemExitClick
       end
     end
-    object MenuItem2: TMenuItem
+    object MenuItemSettings: TMenuItem
       Caption = 'Settings'
-      object MenuItem3: TMenuItem
+      object MenuItemPreferences: TMenuItem
         Caption = 'Preferences'
+        OnClick = MenuItemPreferencesClick
       end
     end
   end
