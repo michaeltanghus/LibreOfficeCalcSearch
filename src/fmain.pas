@@ -1,4 +1,4 @@
-unit fMain;
+unit fmain;
 
 {$mode objfpc}{$H+}
 
@@ -37,7 +37,7 @@ type
   end;
 
 var
-  TMainForm: TMainForm;
+  MainForm: TMainForm;
 
 implementation
 
