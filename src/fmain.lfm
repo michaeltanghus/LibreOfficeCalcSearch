@@ -1,8 +1,40 @@
 object Form1: TForm1
-  Left = 2920
-  Height = 240
-  Top = 101
-  Width = 320
+  Left = 2312
+  Height = 322
+  Top = 277
+  Width = 876
   Caption = 'Form1'
+  Menu = MainMenu1
   LCLVersion = '4.4.0.0'
+  object MainMenu1: TMainMenu
+    Left = 56
+    Top = 24
+    object MenuItem1: TMenuItem
+      Caption = 'File'
+      object MenuItem4: TMenuItem
+        Caption = 'New Search'
+      end
+      object MenuItem5: TMenuItem
+        Caption = 'OpenSearch'
+      end
+      object MenuItem6: TMenuItem
+        Caption = 'Save'
+      end
+      object MenuItem7: TMenuItem
+        Caption = 'Save As'
+      end
+      object MenuItem8: TMenuItem
+        Caption = 'Export'
+      end
+      object MenuItem9: TMenuItem
+        Caption = 'Exit'
+      end
+    end
+    object MenuItem2: TMenuItem
+      Caption = 'Settings'
+      object MenuItem3: TMenuItem
+        Caption = 'Preferences'
+      end
+    end
+  end
 end
