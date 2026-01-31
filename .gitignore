@@ -1,0 +1,29 @@
+# Lazarus / FPC
+*.lps
+*.compiled
+*.ppu
+*.o
+*.or
+*.rst
+*.rsj
+*.dbg
+*.a
+*.so
+*.dll
+*.exe
+
+# Lazarus backup/session files
+backup/
+lib/
+*.bak
+*.~*
+*.dcu
+
+# Output folders (we'll configure Lazarus to use these)
+bin/
+out/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
