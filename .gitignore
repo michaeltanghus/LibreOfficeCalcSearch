@@ -1,25 +1,19 @@
-# Lazarus / FPC
-*.lps
-*.compiled
+# Lazarus / FPC build artifacts
 *.ppu
 *.o
 *.or
-*.rst
-*.rsj
-*.dbg
 *.a
 *.so
 *.dll
 *.exe
+*.dbg
 
-# Lazarus backup/session files
+# Lazarus session / backups
+*.lps
 backup/
 lib/
-*.bak
-*.~*
-*.dcu
 
-# Output folders (we'll configure Lazarus to use these)
+# Common output folders
 bin/
 out/
 
