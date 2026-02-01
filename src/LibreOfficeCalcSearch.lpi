@@ -39,9 +39,9 @@
       <Unit>
         <Filename Value="fmain.pas"/>
         <IsPartOfProject Value="True"/>
-        <ComponentName Value="TMainForm"/>
+        <ComponentName Value="MainForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="fMain"/>
       </Unit>
     </Units>
   </ProjectOptions>

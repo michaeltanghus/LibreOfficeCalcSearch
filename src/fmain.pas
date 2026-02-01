@@ -29,8 +29,14 @@ type
     mnuSettingsPreferences: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
-    procedure mnuFileExitClick(Sender: TObject);
-    procedure mnuFileNewSearchClick(Sender: TObject);
+    procedure MenuItemExitClick(Sender: TObject);
+    procedure MenuItemExportClick(Sender: TObject);
+    procedure MenuItemNewSearchClick(Sender: TObject);
+    procedure MenuItemOpenSearchClick(Sender: TObject);
+    procedure MenuItemPreferencesClick(Sender: TObject);
+    procedure MenuItemSaveAsClick(Sender: TObject);
+    procedure MenuItemSaveClick(Sender: TObject);
+    procedure MenuOpenSearchClick(Sender: TObject);
   private
     procedure Log(const AMessage: string);
   public
@@ -51,14 +57,50 @@ begin
   Log('Application started.');
 end;
 
-procedure TMainForm.mnuFileExitClick(Sender: TObject);
+procedure TMainForm.MenuItemExitClick(Sender: TObject);
 begin
   Close;
 end;
 
-procedure TMainForm.mnuFileNewSearchClick(Sender: TObject);
+procedure TMainForm.MenuItemExportClick(Sender: TObject);
 begin
-  Log('New Search clicked (dialog not implemented yet).');
+  Log('Export clicked (dialog not implemented yet).');
+  // Next commit: show Search dialog and run scan
+end;
+
+procedure TMainForm.MenuItemNewSearchClick(Sender: TObject);
+begin
+      Log('New Search clicked (dialog not implemented yet).');
+      // Next commit: show Search dialog and run scan
+end;
+
+procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
+begin
+  Log('Open Search clicked (dialog not implemented yet).');
+  // Next commit: show Search dialog and run scan
+end;
+
+procedure TMainForm.MenuItemPreferencesClick(Sender: TObject);
+begin
+  Log('Preferences clicked (dialog not implemented yet).');
+  // Next commit: show Search dialog and run scan
+end;
+
+procedure TMainForm.MenuItemSaveAsClick(Sender: TObject);
+begin
+  Log('Save As clicked (dialog not implemented yet).');
+  // Next commit: show Search dialog and run scan
+end;
+
+procedure TMainForm.MenuItemSaveClick(Sender: TObject);
+begin
+  Log('Save clicked (dialog not implemented yet).');
+  // Next commit: show Search dialog and run scan
+end;
+
+procedure TMainForm.MenuOpenSearchClick(Sender: TObject);
+begin
+  Log('File New Search clicked (dialog not implemented yet).');
   // Next commit: show Search dialog and run scan
 end;
 
