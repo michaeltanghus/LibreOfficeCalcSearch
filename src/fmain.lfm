@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 2312
+  Left = 2230
   Height = 322
-  Top = 277
+  Top = 476
   Width = 876
   Caption = 'LibreOffice Calc Search'
   ClientHeight = 322
@@ -14,9 +14,9 @@ object MainForm: TMainForm
     Height = 322
     Top = 0
     Width = 876
-    ActivePage = TabResults
+    ActivePage = TabLog
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabResults: TTabSheet
       Caption = 'Results'

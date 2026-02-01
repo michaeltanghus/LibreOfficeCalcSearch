@@ -5,13 +5,22 @@ unit fmain;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ComCtrls, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ComCtrls, StdCtrls, fsearch;
 
 type
   { TMainForm }
   TMainForm = class(TForm)
     MainMenu1: TMainMenu;
     MemoLog: TMemo;
+    MenuItemExit: TMenuItem;
+    MenuItemExport: TMenuItem;
+    MenuItemFile: TMenuItem;
+    MenuItemNewSearch: TMenuItem;
+    MenuItemOpenSearch: TMenuItem;
+    MenuItemPreferences: TMenuItem;
+    MenuItemSave: TMenuItem;
+    MenuItemSaveAs: TMenuItem;
+    MenuItemSettings: TMenuItem;
     PageControl1: TPageControl;
     TabLog: TTabSheet;
     TabResults: TTabSheet;
@@ -69,9 +78,18 @@ begin
 end;
 
 procedure TMainForm.MenuItemNewSearchClick(Sender: TObject);
+var
+  SearchForm: TSearchForm;
 begin
-      Log('New Search clicked (dialog not implemented yet).');
-      // Next commit: show Search dialog and run scan
+  SearchForm := TSearchForm.Create(Self);
+  try
+    if SearchForm.ShowModal = mrOK then
+      Log('Search accepted: "' + SearchForm.edtQuery.Text + '" in ' + SearchForm.edtDirectory.Text)
+    else
+      Log('Search canceled.');
+  finally
+    SearchForm.Free;
+  end;
 end;
 
 procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
