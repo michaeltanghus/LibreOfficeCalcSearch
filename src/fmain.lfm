@@ -1,35 +1,48 @@
 object MainForm: TMainForm
-  Left = 2230
-  Height = 322
-  Top = 476
-  Width = 876
+  Left = 1995
+  Height = 565
+  Top = 288
+  Width = 981
   Caption = 'LibreOffice Calc Search'
-  ClientHeight = 322
-  ClientWidth = 876
+  ClientHeight = 565
+  ClientWidth = 981
   Menu = MainMenu1
   LCLVersion = '4.4.0.0'
   OnCreate = FormCreate
   object PageControl1: TPageControl
     Left = 0
-    Height = 322
+    Height = 364
     Top = 0
-    Width = 876
-    ActivePage = TabLog
+    Width = 981
+    ActivePage = TabResults
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabResults: TTabSheet
       Caption = 'Results'
+      ClientHeight = 331
+      ClientWidth = 971
+      object GridResults: TStringGrid
+        Left = 0
+        Height = 331
+        Top = 0
+        Width = 971
+        Align = alClient
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
+        RowCount = 2
+        TabOrder = 0
+        OnSelectCell = GridResultsSelectCell
+      end
     end
     object TabLog: TTabSheet
       Caption = 'Log'
-      ClientHeight = 289
-      ClientWidth = 866
+      ClientHeight = 331
+      ClientWidth = 971
       object MemoLog: TMemo
         Left = 0
-        Height = 289
+        Height = 331
         Top = 0
-        Width = 866
+        Width = 971
         Align = alClient
         Lines.Strings = (
           'MemoLog'
@@ -39,6 +52,29 @@ object MainForm: TMainForm
         TabOrder = 0
       end
     end
+  end
+  object Splitter1: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 1
+    Top = 364
+    Width = 981
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+  object MemoDetails: TMemo
+    Left = 0
+    Height = 200
+    Top = 365
+    Width = 981
+    Align = alBottom
+    Lines.Strings = (
+      'MemoDetails'
+    )
+    ReadOnly = True
+    ScrollBars = ssAutoBoth
+    TabOrder = 2
+    WordWrap = False
   end
   object MainMenu1: TMainMenu
     Left = 56

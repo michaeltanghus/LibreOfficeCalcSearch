@@ -5,7 +5,8 @@ unit fsearch;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
+  uModels;
 
 type
 
@@ -22,7 +23,7 @@ type
     edtMask: TEdit;
     edtQuery: TEdit;
     edtDirectory: TEdit;
-    GroupResultMode: TGroupBox;
+    RadioGroupResultMode: TRadioGroup;
     LabelWhatToFind: TLabel;
     LabelDirectory: TLabel;
     LabelFileMask: TLabel;
@@ -35,7 +36,7 @@ type
   private
 
   public
-
+    function BuildCriteria: TSearchCriteria;
   end;
 
 var
@@ -57,6 +58,24 @@ end;
 procedure TSearchForm.FormCreate(Sender: TObject);
 begin
 
+end;
+function TSearchForm.BuildCriteria: TSearchCriteria;
+begin
+  Result.QueryText := edtQuery.Text;
+  Result.Directory := edtDirectory.Text;
+  Result.FileMask := edtMask.Text;
+  Result.SearchSubfolders := chkSubfolders.Checked;
+
+  Result.MatchCase := chkMatchCase.Checked;
+  Result.WholeWord := chkWholeWord.Checked;
+  Result.UseRegex := chkRegex.Checked;
+
+  case RadioGroupResultMode.ItemIndex of
+    1: Result.ResultMode := rmWholeRow;
+    2: Result.ResultMode := rmWholeColumn;
+  else
+    Result.ResultMode := rmCellOnly;
+  end;
 end;
 
 end.

@@ -1,7 +1,7 @@
 object SearchForm: TSearchForm
-  Left = 2380
+  Left = 2478
   Height = 358
-  Top = 433
+  Top = 684
   Width = 714
   Caption = 'Find What'
   ClientHeight = 358
@@ -36,7 +36,7 @@ object SearchForm: TSearchForm
     Top = 56
     Width = 224
     TabOrder = 1
-    Text = 'edtDirectory'
+    Text = '/home/michael/marmic/Dokumenter/Dokumenter_med_backup/marmic_håndbryg'
   end
   object btnBrowseDir: TButton
     Left = 344
@@ -60,7 +60,7 @@ object SearchForm: TSearchForm
     Top = 112
     Width = 224
     TabOrder = 3
-    Text = '.ods'
+    Text = '*.ods'
   end
   object chkSubfolders: TCheckBox
     Left = 16
@@ -94,41 +94,6 @@ object SearchForm: TSearchForm
     Caption = 'Use Regex'
     TabOrder = 7
   end
-  object GroupResultMode: TGroupBox
-    Left = 192
-    Height = 105
-    Top = 176
-    Width = 185
-    Caption = 'Result mode'
-    ClientHeight = 85
-    ClientWidth = 183
-    TabOrder = 8
-    object rbCellOnly: TRadioButton
-      Left = 10
-      Height = 23
-      Top = 10
-      Width = 88
-      Caption = 'Cell only'
-      Checked = True
-      TabOrder = 0
-    end
-    object rbWholeRow: TRadioButton
-      Left = 10
-      Height = 23
-      Top = 32
-      Width = 101
-      Caption = 'Whole row'
-      TabOrder = 1
-    end
-    object rbWholeColumn: TRadioButton
-      Left = 10
-      Height = 23
-      Top = 56
-      Width = 127
-      Caption = 'Whole column'
-      TabOrder = 2
-    end
-  end
   object btnCancel: TButton
     Left = 448
     Height = 25
@@ -136,7 +101,7 @@ object SearchForm: TSearchForm
     Width = 75
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 9
+    TabOrder = 8
   end
   object btnSearch: TButton
     Left = 560
@@ -145,7 +110,51 @@ object SearchForm: TSearchForm
     Width = 75
     Caption = 'Search'
     ModalResult = 1
+    TabOrder = 9
+  end
+  object RadioGroupResultMode: TRadioGroup
+    Left = 192
+    Height = 105
+    Top = 182
+    Width = 185
+    AutoFill = True
+    Caption = 'RadioGroupResultMode'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 85
+    ClientWidth = 183
     TabOrder = 10
+    object rbCellOnly: TRadioButton
+      Left = 6
+      Height = 28
+      Top = 0
+      Width = 171
+      Caption = 'Cell only'
+      Checked = True
+      TabOrder = 0
+      TabStop = True
+    end
+    object rbWholeRow: TRadioButton
+      Left = 6
+      Height = 29
+      Top = 28
+      Width = 171
+      Caption = 'Whole row'
+      TabOrder = 1
+    end
+    object rbWholeColumn: TRadioButton
+      Left = 6
+      Height = 28
+      Top = 57
+      Width = 171
+      Caption = 'Whole column'
+      TabOrder = 2
+    end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Left = 656

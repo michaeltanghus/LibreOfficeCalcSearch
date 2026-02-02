@@ -47,7 +47,17 @@
         <Filename Value="fsearch.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="SearchForm"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+      </Unit>
+      <Unit>
+        <Filename Value="umodels.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uModels"/>
+      </Unit>
+      <Unit>
+        <Filename Value="usearchengine.pas"/>
+        <IsPartOfProject Value="True"/>
       </Unit>
     </Units>
   </ProjectOptions>
@@ -72,7 +82,7 @@
     </Linking>
   </CompilerOptions>
   <Debugging>
-    <Exceptions>
+    <Exceptions IgnoreAll="True">
       <Item>
         <Name Value="EAbort"/>
       </Item>
@@ -81,6 +91,12 @@
       </Item>
       <Item>
         <Name Value="EFOpenError"/>
+      </Item>
+      <Item>
+        <Name Value="EFpSpreadsheetReader"/>
+      </Item>
+      <Item>
+        <Name Value="EFpSpreadsheet"/>
       </Item>
     </Exceptions>
   </Debugging>

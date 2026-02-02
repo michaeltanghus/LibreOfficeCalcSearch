@@ -10,7 +10,7 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, fmain, fsearch
+  Forms, fmain, fsearch, uModels, uSearchEngine
   { you can add units after this };
 
 {$R *.res}
