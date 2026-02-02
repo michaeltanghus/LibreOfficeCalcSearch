@@ -378,7 +378,8 @@ begin
           Hit^.SheetName := Sheet.Name;
           Hit^.RowIndex := Cell^.Row;
           Hit^.ColIndex := Cell^.Col;
-          Hit^.CellA1 := GetCellString(Cell^.Col, Cell^.Row);
+          // Hit^.CellA1 := GetCellString(Cell^.Col, Cell^.Row);
+          Hit^.CellA1 := GetCellString(Cell^.Row, Cell^.Col);
           Hit^.CellText := TextValue;
           Hit^.ContextText := BuildContextText(Sheet, Cell^.Row, Cell^.Col);
           AResults.Add(Hit);

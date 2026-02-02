@@ -7,10 +7,10 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
   ComCtrls, StdCtrls, Grids, ExtCtrls, Types,
+  Process, URIParser, FileUtil,
   uModels, usearchengine, fsearch;
 
 type
-  // IMPORTANT: typed pointer needed for parameters/fields
   PSearchHit = ^TSearchHit;
 
 type
@@ -30,31 +30,25 @@ type
     MenuItemPreferences: TMenuItem;
 
     PageControl1: TPageControl;
-    Splitter1: TSplitter;
-
     TabResults: TTabSheet;
     TabLog: TTabSheet;
 
     GridResults: TStringGrid;
-
-    // Detail panel (you said already implemented)
-    MemoDetails: TMemo;
-
-    // Log tab memo
     MemoLog: TMemo;
+
+    // Detail panel already in your .lfm
+    Splitter1: TSplitter;
+    MemoDetails: TMemo;
 
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
 
+    procedure MenuItemExitClick(Sender: TObject);
     procedure MenuItemNewSearchClick(Sender: TObject);
     procedure MenuItemOpenSearchClick(Sender: TObject);
-
     procedure MenuItemSaveClick(Sender: TObject);
     procedure MenuItemSaveAsClick(Sender: TObject);
-
     procedure MenuItemExportClick(Sender: TObject);
-    procedure MenuItemExitClick(Sender: TObject);
-
     procedure MenuItemPreferencesClick(Sender: TObject);
 
     procedure GridResultsSelectCell(Sender: TObject; aCol, aRow: Integer;
@@ -77,6 +71,11 @@ type
     function GridRowHitPtr(const ARow: Integer): PSearchHit;
     procedure SetGridRowHitPtr(const ARow: Integer; const AHitPtr: PSearchHit);
 
+    procedure GridResultsDblClick(Sender: TObject);
+
+    function BuildLibreOfficeTargetUrl(const AHitPtr: PSearchHit): string;
+    procedure OpenHitInLibreOffice(const AHitPtr: PSearchHit);
+
   public
   end;
 
@@ -93,7 +92,7 @@ procedure TMainForm.FormCreate(Sender: TObject);
 begin
   FHits := TList.Create;
 
-  // Results grid setup
+  // Results grid setup (matches .lfm)
   GridResults.ColCount := 5;
   GridResults.FixedRows := 1;
   GridResults.RowCount := 2;
@@ -104,6 +103,9 @@ begin
   GridResults.Cells[2, 0] := 'Cell';
   GridResults.Cells[3, 0] := 'Value';
   GridResults.Cells[4, 0] := 'Context';
+
+  // Assign double-click in code (no .lfm change)
+  GridResults.OnDblClick := @GridResultsDblClick;
 
   // Details memo UX (horizontal scroll for long paths/text)
   MemoDetails.ReadOnly := True;
@@ -152,12 +154,8 @@ end;
 
 procedure TMainForm.ClearResultsGrid;
 begin
-  // Reduce row count back to header + one empty row
   GridResults.RowCount := 2;
-
-  // Clear any stored object references (row 1)
   SetGridRowHitPtr(1, nil);
-
   MemoDetails.Clear;
 end;
 
@@ -184,15 +182,13 @@ begin
   Row := GridResults.RowCount;
   GridResults.RowCount := Row + 1;
 
-  // Show filename only (cleaner)
+  // Show filename only
   GridResults.Cells[0, Row] := ExtractFileName(AHitPtr^.FilePath);
-
   GridResults.Cells[1, Row] := AHitPtr^.SheetName;
   GridResults.Cells[2, Row] := AHitPtr^.CellA1;
   GridResults.Cells[3, Row] := AHitPtr^.CellText;
   GridResults.Cells[4, Row] := AHitPtr^.ContextText;
 
-  // Store pointer for details/double-click actions later
   SetGridRowHitPtr(Row, AHitPtr);
 end;
 
@@ -225,13 +221,13 @@ begin
         MaxWidth := W;
     end;
 
-    // Caps to keep UI sane
+    // Caps to keep UI sane (details panel shows full)
     case Col of
       0: if MaxWidth > 320 then MaxWidth := 320; // File (filename)
       1: if MaxWidth > 200 then MaxWidth := 200; // Sheet
       2: if MaxWidth > 90 then MaxWidth := 90;   // Cell
       3: if MaxWidth > 600 then MaxWidth := 600; // Value
-      4: if MaxWidth > 220 then MaxWidth := 220; // Context (details panel shows full)
+      4: if MaxWidth > 220 then MaxWidth := 220; // Context
     else
       if MaxWidth > 250 then MaxWidth := 250;
     end;
@@ -286,7 +282,6 @@ begin
   HitPtr := GridRowHitPtr(aRow);
   ShowHitInDetails(HitPtr);
 
-  // Optional tooltip with full path
   if HitPtr <> nil then
   begin
     GridResults.Hint := HitPtr^.FilePath;
@@ -294,6 +289,120 @@ begin
   end;
 end;
 
+function TMainForm.BuildLibreOfficeTargetUrl(const AHitPtr: PSearchHit): string;
+var
+  FileUrl: string;
+  SheetEsc: string;
+begin
+  // Convert local path (UTF-8, spaces, æøå, etc.) to file:/// URL safely
+  FileUrl := FilenameToURI(AHitPtr^.FilePath);
+
+  // Sheet names with spaces must be quoted. LibreOffice uses single quotes.
+  // Escape embedded ' by doubling it.
+  SheetEsc := StringReplace(AHitPtr^.SheetName, '''', '''''', [rfReplaceAll]);
+
+  // External target syntax commonly uses: file:///path.ods#$'Sheet name'.A1
+  Result := FileUrl + '#$''' + SheetEsc + '''.' + AHitPtr^.CellA1;
+end;
+
+procedure TMainForm.OpenHitInLibreOffice(const AHitPtr: PSearchHit);
+var
+  TargetUrl: string;
+  Proc: TProcess;
+  ExePath: string;
+
+  procedure TryRun(const AExe: string);
+  begin
+    Proc.Executable := AExe;
+    Proc.Parameters.Clear;
+    Proc.Parameters.Add('--calc');
+    Proc.Parameters.Add(TargetUrl);
+    Proc.Options := [poNoConsole];
+    Proc.Execute;
+  end;
+
+begin
+  if AHitPtr = nil then
+    Exit;
+
+  TargetUrl := BuildLibreOfficeTargetUrl(AHitPtr);
+
+  Log('Open in LibreOffice: ' + TargetUrl);
+
+  Proc := TProcess.Create(nil);
+  try
+    // Prefer 'libreoffice' wrapper if installed; fallback to 'soffice'
+    ExePath := FindDefaultExecutablePath('libreoffice');
+    if ExePath = '' then
+      ExePath := FindDefaultExecutablePath('soffice');
+
+    try
+      if ExePath <> '' then
+        TryRun(ExePath)
+      else
+        TryRun('libreoffice');
+    except
+      on E: Exception do
+      begin
+        // Fallback attempt
+        try
+          TryRun('soffice');
+        except
+          on E2: Exception do
+            MessageDlg('Unable to start LibreOffice.' + LineEnding +
+              'Tried libreoffice/soffice.' + LineEnding +
+              'Error: ' + E2.Message, mtError, [mbOK], 0);
+        end;
+      end;
+    end;
+
+  finally
+    Proc.Free;
+  end;
+end;
+
+procedure TMainForm.GridResultsDblClick(Sender: TObject);
+var
+  Row: Integer;
+  HitPtr: PSearchHit;
+begin
+  Row := GridResults.Row;
+  if Row <= 0 then
+    Exit;
+
+  HitPtr := GridRowHitPtr(Row);
+  OpenHitInLibreOffice(HitPtr);
+end;
+
+procedure TMainForm.MenuItemExitClick(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TMainForm.MenuItemPreferencesClick(Sender: TObject);
+begin
+  Log('Preferences clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
+begin
+  Log('Open Search clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemSaveClick(Sender: TObject);
+begin
+  Log('Save Search clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemSaveAsClick(Sender: TObject);
+begin
+  Log('Save Search As clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemExportClick(Sender: TObject);
+begin
+  Log('Export clicked (not implemented yet).');
+end;
 
 procedure TMainForm.MenuItemNewSearchClick(Sender: TObject);
 var
@@ -332,7 +441,8 @@ begin
   Engine := TSearchEngine.Create(Crit, @Log);
   try
     Engine.Execute(FHits);
-    Log('Files scanned: ' + IntToStr(Engine.FilesScanned) + ', failed: ' + IntToStr(Engine.FilesFailed));
+    Log('Files scanned: ' + IntToStr(Engine.FilesScanned) +
+        ', failed: ' + IntToStr(Engine.FilesFailed));
   finally
     Engine.Free;
   end;
@@ -348,41 +458,6 @@ begin
   AutoSizeResultsColumns(200);
 
   Log('Search finished.');
-end;
-
-
-
-procedure TMainForm.MenuItemPreferencesClick(Sender: TObject);
-begin
-  Log('Preferences clicked (not implemented yet).');
-end;
-
-procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
-begin
-  Log('Open Search clicked (not implemented yet).');
-end;
-
-procedure TMainForm.MenuItemSaveClick(Sender: TObject);
-begin
-  Log('Save Search clicked (not implemented yet).');
-end;
-
-procedure TMainForm.MenuItemSaveAsClick(Sender: TObject);
-begin
-  Log('Save Search As clicked (not implemented yet).');
-end;
-
-
-procedure TMainForm.MenuItemExportClick(Sender: TObject);
-begin
-  Log('Export clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
-end;
-
-
-procedure TMainForm.MenuItemExitClick(Sender: TObject);
-begin
-  Close;
 end;
 
 end.

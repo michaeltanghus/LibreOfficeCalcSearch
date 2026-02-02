@@ -14,9 +14,9 @@ object MainForm: TMainForm
     Height = 364
     Top = 0
     Width = 981
-    ActivePage = TabResults
+    ActivePage = TabLog
     Align = alClient
-    TabIndex = 0
+    TabIndex = 1
     TabOrder = 0
     object TabResults: TTabSheet
       Caption = 'Results'
