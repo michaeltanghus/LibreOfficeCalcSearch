@@ -5,61 +5,77 @@ unit fmain;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus, ComCtrls,
-  StdCtrls, Grids, ExtCtrls, uModels, uSearchEngine, fsearch;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
+  ComCtrls, StdCtrls, Grids, ExtCtrls, Types,
+  uModels, usearchengine, fsearch;
+
+type
+  // IMPORTANT: typed pointer needed for parameters/fields
+  PSearchHit = ^TSearchHit;
 
 type
   { TMainForm }
   TMainForm = class(TForm)
     MainMenu1: TMainMenu;
-    MemoDetails: TMemo;
-    MemoLog: TMemo;
-    MenuItemExit: TMenuItem;
-    MenuItemExport: TMenuItem;
-    // MenuItemFile: TMenuItem;
-    // MenuItemNewSearch: TMenuItem;
-    MenuItemOpenSearch: TMenuItem;
-    MenuItemPreferences: TMenuItem;
-    MenuItemSave: TMenuItem;
-    MenuItemSaveAs: TMenuItem;
-    // MenuItemSettings: TMenuItem;
-    PageControl1: TPageControl;
-    GridResults: TStringGrid;
-    Splitter1: TSplitter;
-    TabLog: TTabSheet;
-    TabResults: TTabSheet;
 
-    // Menu items (names must match what you created in the designer)
     MenuItemFile: TMenuItem;
     MenuItemNewSearch: TMenuItem;
-    MenuItemFileOpenSearch: TMenuItem;
-    MenuItemFileSaveSearch: TMenuItem;
-    MenuItemFileSaveSearchAs: TMenuItem;
-    MenuItemFileExport: TMenuItem;
-    MenuItemFileExit: TMenuItem;
+    MenuItemOpenSearch: TMenuItem;
+    MenuItemSave: TMenuItem;
+    MenuItemSaveAs: TMenuItem;
+    MenuItemExport: TMenuItem;
+    MenuItemExit: TMenuItem;
 
     MenuItemSettings: TMenuItem;
-    MenuItemSettingsPreferences: TMenuItem;
+    MenuItemPreferences: TMenuItem;
+
+    PageControl1: TPageControl;
+    Splitter1: TSplitter;
+
+    TabResults: TTabSheet;
+    TabLog: TTabSheet;
+
+    GridResults: TStringGrid;
+
+    // Detail panel (you said already implemented)
+    MemoDetails: TMemo;
+
+    // Log tab memo
+    MemoLog: TMemo;
 
     procedure FormCreate(Sender: TObject);
-    procedure GridResultsSelectCell(Sender: TObject; aCol, aRow: Integer;
-      var CanSelect: Boolean);
-    procedure MenuItemExitClick(Sender: TObject);
-    procedure MenuItemExportClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+
     procedure MenuItemNewSearchClick(Sender: TObject);
     procedure MenuItemOpenSearchClick(Sender: TObject);
-    procedure MenuItemPreferencesClick(Sender: TObject);
-    procedure MenuItemSaveAsClick(Sender: TObject);
+
     procedure MenuItemSaveClick(Sender: TObject);
-    procedure MenuOpenSearchClick(Sender: TObject);
+    procedure MenuItemSaveAsClick(Sender: TObject);
+
+    procedure MenuItemExportClick(Sender: TObject);
+    procedure MenuItemExitClick(Sender: TObject);
+
+    procedure MenuItemPreferencesClick(Sender: TObject);
+
+    procedure GridResultsSelectCell(Sender: TObject; aCol, aRow: Integer;
+      var CanSelect: Boolean);
 
   private
+    FHits: TList;
+
     procedure Log(const AMessage: string);
+
+    procedure ClearHits;
     procedure ClearResultsGrid;
-    procedure AddHitToGrid(const AHit: TSearchHit);
-    procedure AppException(Sender: TObject; E: Exception);
+    procedure AddHitToGrid(const AHitPtr: PSearchHit);
+
     procedure AutoSizeResultsColumns(const AMaxRowsToScan: Integer);
     function MeasureCellTextWidth(const S: string): Integer;
+
+    procedure ShowHitInDetails(const AHitPtr: PSearchHit);
+
+    function GridRowHitPtr(const ARow: Integer): PSearchHit;
+    procedure SetGridRowHitPtr(const ARow: Integer; const AHitPtr: PSearchHit);
 
   public
   end;
@@ -75,157 +91,38 @@ implementation
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  Application.OnException := @AppException;
+  FHits := TList.Create;
+
+  // Results grid setup
+  GridResults.ColCount := 5;
+  GridResults.FixedRows := 1;
+  GridResults.RowCount := 2;
+  GridResults.Options := GridResults.Options + [goRowSelect];
+
+  GridResults.Cells[0, 0] := 'File';
+  GridResults.Cells[1, 0] := 'Sheet';
+  GridResults.Cells[2, 0] := 'Cell';
+  GridResults.Cells[3, 0] := 'Value';
+  GridResults.Cells[4, 0] := 'Context';
+
+  // Details memo UX (horizontal scroll for long paths/text)
+  MemoDetails.ReadOnly := True;
+  MemoDetails.ScrollBars := ssAutoBoth;
+  MemoDetails.WordWrap := False;
+
+  // Log memo UX
+  MemoLog.ReadOnly := True;
+  MemoLog.ScrollBars := ssAutoVertical;
+
   PageControl1.ActivePage := TabResults;
+
   Log('Application started.');
 end;
 
-procedure TMainForm.GridResultsSelectCell(Sender: TObject; aCol, aRow: Integer;
-  var CanSelect: Boolean);
-  var
-    FilePath: string;
-    SheetName: string;
-    CellA1: string;
-    ValueText: string;
-    ContextText: string;
-  begin
-    if aRow <= 0 then
-    begin
-      MemoDetails.Clear;
-      Exit;
-    end;
-
-    FilePath := GridResults.Cells[0, aRow];
-    SheetName := GridResults.Cells[1, aRow];
-    CellA1 := GridResults.Cells[2, aRow];
-    ValueText := GridResults.Cells[3, aRow];
-    ContextText := GridResults.Cells[4, aRow];
-
-    MemoDetails.Lines.BeginUpdate;
-    try
-      MemoDetails.Clear;
-      MemoDetails.Lines.Add('File:    ' + FilePath);
-      MemoDetails.Lines.Add('Sheet:   ' + SheetName);
-      MemoDetails.Lines.Add('Cell:    ' + CellA1);
-      MemoDetails.Lines.Add('');
-      MemoDetails.Lines.Add('Value:');
-      MemoDetails.Lines.Add(ValueText);
-      if ContextText <> '' then
-      begin
-        MemoDetails.Lines.Add('');
-        MemoDetails.Lines.Add('Context:');
-        MemoDetails.Lines.Add(ContextText);
-      end;
-    finally
-      MemoDetails.Lines.EndUpdate;
-    end;
-end;
-
-procedure TMainForm.MenuItemExitClick(Sender: TObject);
+procedure TMainForm.FormDestroy(Sender: TObject);
 begin
-  Close;
-end;
-
-procedure TMainForm.MenuItemExportClick(Sender: TObject);
-begin
-  Log('Export clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
-end;
-
-procedure TMainForm.MenuItemNewSearchClick(Sender: TObject);
-//  procedure TMainForm.mnuFileNewSearchClick(Sender: TObject);
-  var
-    SearchForm: TSearchForm;
-    Crit: TSearchCriteria;
-    Engine: TSearchEngine;
-    Results: TList;
-    I: Integer;
-    HitPtr: ^TSearchHit;
-  begin
-    SearchForm := TSearchForm.Create(Self);
-    try
-      if SearchForm.ShowModal <> mrOK then
-      begin
-        Log('Search canceled.');
-        Exit;
-      end;
-
-      Crit := SearchForm.BuildCriteria;
-    finally
-      SearchForm.Free;
-    end;
-
-    if (Crit.Directory = '') or (not DirectoryExists(Crit.Directory)) then
-    begin
-      Log('Invalid directory: ' + Crit.Directory);
-      Exit;
-    end;
-
-    ClearResultsGrid;
-    PageControl1.ActivePage := TabResults;
-
-    Log('Search started: "' + Crit.QueryText + '" in ' + Crit.Directory + ' mask=' + Crit.FileMask);
-
-    Results := TList.Create;
-    try
-      Engine := TSearchEngine.Create(Crit, @Log);
-      try
-        Engine.Execute(Results);
-      finally
-        Engine.Free;
-      end;
-
-      Log('Hits: ' + IntToStr(Results.Count));
-
-      for I := 0 to Results.Count - 1 do
-      begin
-        HitPtr := Results[I];
-        AddHitToGrid(HitPtr^);
-      end;
-
-      AutoSizeResultsColumns(200);
-
-    finally
-      // free hit records
-      for I := 0 to Results.Count - 1 do
-      begin
-        HitPtr := Results[I];
-        Dispose(HitPtr);
-      end;
-      Results.Free;
-    end;
-
-    Log('Search finished.');
-  end;
-
-procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
-begin
-  Log('Open Search clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
-end;
-
-procedure TMainForm.MenuItemPreferencesClick(Sender: TObject);
-begin
-  Log('Preferences clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
-end;
-
-procedure TMainForm.MenuItemSaveAsClick(Sender: TObject);
-begin
-  Log('Save As clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
-end;
-
-procedure TMainForm.MenuItemSaveClick(Sender: TObject);
-begin
-  Log('Save clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
-end;
-
-procedure TMainForm.MenuOpenSearchClick(Sender: TObject);
-begin
-  Log('File New Search clicked (dialog not implemented yet).');
-  // Next commit: show Search dialog and run scan
+  ClearHits;
+  FreeAndNil(FHits);
 end;
 
 procedure TMainForm.Log(const AMessage: string);
@@ -236,46 +133,72 @@ begin
   MemoLog.Lines.Add(TimeStamp + '  ' + AMessage);
 end;
 
-procedure TMainForm.ClearResultsGrid;
+procedure TMainForm.ClearHits;
+var
+  I: Integer;
+  HitPtr: PSearchHit;
 begin
-  GridResults.ColCount := 5;
-  GridResults.FixedRows := 1;
-  GridResults.RowCount := 2;
+  if FHits = nil then
+    Exit;
 
-  GridResults.Cells[0,0] := 'File';
-  GridResults.Cells[1,0] := 'Sheet';
-  GridResults.Cells[2,0] := 'Cell';
-  GridResults.Cells[3,0] := 'Value';
-  GridResults.Cells[4,0] := 'Context';
+  for I := 0 to FHits.Count - 1 do
+  begin
+    HitPtr := PSearchHit(FHits[I]);
+    Dispose(HitPtr);
+  end;
+
+  FHits.Clear;
 end;
 
-procedure TMainForm.AddHitToGrid(const AHit: TSearchHit);
+procedure TMainForm.ClearResultsGrid;
+begin
+  // Reduce row count back to header + one empty row
+  GridResults.RowCount := 2;
+
+  // Clear any stored object references (row 1)
+  SetGridRowHitPtr(1, nil);
+
+  MemoDetails.Clear;
+end;
+
+function TMainForm.GridRowHitPtr(const ARow: Integer): PSearchHit;
+begin
+  if (ARow < 1) or (ARow >= GridResults.RowCount) then
+    Exit(nil);
+
+  Result := PSearchHit(PtrUInt(GridResults.Objects[0, ARow]));
+end;
+
+procedure TMainForm.SetGridRowHitPtr(const ARow: Integer; const AHitPtr: PSearchHit);
+begin
+  if (ARow < 1) or (ARow >= GridResults.RowCount) then
+    Exit;
+
+  GridResults.Objects[0, ARow] := TObject(PtrUInt(AHitPtr));
+end;
+
+procedure TMainForm.AddHitToGrid(const AHitPtr: PSearchHit);
 var
   Row: Integer;
 begin
   Row := GridResults.RowCount;
   GridResults.RowCount := Row + 1;
 
-  GridResults.Cells[0, Row] := AHit.FilePath;
-  GridResults.Cells[1, Row] := AHit.SheetName;
-  GridResults.Cells[2, Row] := AHit.CellA1;
-  GridResults.Cells[3, Row] := AHit.CellText;
-  GridResults.Cells[4, Row] := AHit.ContextText;
+  // Show filename only (cleaner)
+  GridResults.Cells[0, Row] := ExtractFileName(AHitPtr^.FilePath);
+
+  GridResults.Cells[1, Row] := AHitPtr^.SheetName;
+  GridResults.Cells[2, Row] := AHitPtr^.CellA1;
+  GridResults.Cells[3, Row] := AHitPtr^.CellText;
+  GridResults.Cells[4, Row] := AHitPtr^.ContextText;
+
+  // Store pointer for details/double-click actions later
+  SetGridRowHitPtr(Row, AHitPtr);
 end;
 
-procedure TMainForm.AppException(Sender: TObject; E: Exception);
-var
-  I: Integer;
+function TMainForm.MeasureCellTextWidth(const S: string): Integer;
 begin
-  Log('EXCEPTION: ' + E.ClassName + ': ' + E.Message);
-
-  // This prints the call stack. With -gl enabled, it includes unit+line.
-  for I := 0 to ExceptFrameCount - 1 do
-    Log(BackTraceStrFunc(ExceptFrames[I]));
-end;
-     function TMainForm.MeasureCellTextWidth(const S: string): Integer;
-begin
-  // Some padding so text isn't flush
+  GridResults.Canvas.Font.Assign(GridResults.Font);
   Result := GridResults.Canvas.TextWidth(S) + 16;
 end;
 
@@ -287,10 +210,6 @@ var
   W: Integer;
   LastRow: Integer;
 begin
-  // Ensure Canvas is ready
-  GridResults.Canvas.Font.Assign(GridResults.Font);
-
-  // Limit scan for performance (e.g. first 200 hits)
   LastRow := GridResults.RowCount - 1;
   if (AMaxRowsToScan > 0) and (LastRow > AMaxRowsToScan) then
     LastRow := AMaxRowsToScan;
@@ -306,21 +225,164 @@ begin
         MaxWidth := W;
     end;
 
-    // Set some reasonable caps so Context doesn't become enormous
+    // Caps to keep UI sane
     case Col of
-      0: if MaxWidth > 600 then MaxWidth := 600; // File
-      3: if MaxWidth > 500 then MaxWidth := 500; // Value
-      4: if MaxWidth > 800 then MaxWidth := 800; // Context
+      0: if MaxWidth > 320 then MaxWidth := 320; // File (filename)
+      1: if MaxWidth > 200 then MaxWidth := 200; // Sheet
+      2: if MaxWidth > 90 then MaxWidth := 90;   // Cell
+      3: if MaxWidth > 600 then MaxWidth := 600; // Value
+      4: if MaxWidth > 220 then MaxWidth := 220; // Context (details panel shows full)
     else
       if MaxWidth > 250 then MaxWidth := 250;
     end;
 
-    // Set a minimum too
     if MaxWidth < 70 then
       MaxWidth := 70;
 
     GridResults.ColWidths[Col] := MaxWidth;
   end;
+end;
+
+procedure TMainForm.ShowHitInDetails(const AHitPtr: PSearchHit);
+begin
+  if AHitPtr = nil then
+  begin
+    MemoDetails.Clear;
+    Exit;
+  end;
+
+  MemoDetails.Lines.BeginUpdate;
+  try
+    MemoDetails.Clear;
+    MemoDetails.Lines.Add('File:    ' + AHitPtr^.FilePath);
+    MemoDetails.Lines.Add('Sheet:   ' + AHitPtr^.SheetName);
+    MemoDetails.Lines.Add('Cell:    ' + AHitPtr^.CellA1);
+    MemoDetails.Lines.Add('');
+    MemoDetails.Lines.Add('Value:');
+    MemoDetails.Lines.Add(AHitPtr^.CellText);
+
+    if AHitPtr^.ContextText <> '' then
+    begin
+      MemoDetails.Lines.Add('');
+      MemoDetails.Lines.Add('Context:');
+      MemoDetails.Lines.Add(AHitPtr^.ContextText);
+    end;
+  finally
+    MemoDetails.Lines.EndUpdate;
+  end;
+end;
+
+procedure TMainForm.GridResultsSelectCell(Sender: TObject; aCol, aRow: Integer;
+  var CanSelect: Boolean);
+var
+  HitPtr: PSearchHit;
+begin
+  if aRow <= 0 then
+  begin
+    MemoDetails.Clear;
+    Exit;
+  end;
+
+  HitPtr := GridRowHitPtr(aRow);
+  ShowHitInDetails(HitPtr);
+
+  // Optional tooltip with full path
+  if HitPtr <> nil then
+  begin
+    GridResults.Hint := HitPtr^.FilePath;
+    GridResults.ShowHint := True;
+  end;
+end;
+
+
+procedure TMainForm.MenuItemNewSearchClick(Sender: TObject);
+var
+  SearchForm: TSearchForm;
+  Crit: TSearchCriteria;
+  Engine: TSearchEngine;
+  I: Integer;
+  HitPtr: PSearchHit;
+begin
+  SearchForm := TSearchForm.Create(Self);
+  try
+    if SearchForm.ShowModal <> mrOK then
+    begin
+      Log('Search canceled.');
+      Exit;
+    end;
+
+    Crit := SearchForm.BuildCriteria;
+  finally
+    SearchForm.Free;
+  end;
+
+  if (Trim(Crit.Directory) = '') or (not DirectoryExists(Crit.Directory)) then
+  begin
+    Log('Invalid directory: ' + Crit.Directory);
+    Exit;
+  end;
+
+  PageControl1.ActivePage := TabResults;
+
+  ClearResultsGrid;
+  ClearHits;
+
+  Log('Search started: "' + Crit.QueryText + '" in ' + Crit.Directory + ' mask=' + Crit.FileMask);
+
+  Engine := TSearchEngine.Create(Crit, @Log);
+  try
+    Engine.Execute(FHits);
+    Log('Files scanned: ' + IntToStr(Engine.FilesScanned) + ', failed: ' + IntToStr(Engine.FilesFailed));
+  finally
+    Engine.Free;
+  end;
+
+  Log('Hits: ' + IntToStr(FHits.Count));
+
+  for I := 0 to FHits.Count - 1 do
+  begin
+    HitPtr := PSearchHit(FHits[I]);
+    AddHitToGrid(HitPtr);
+  end;
+
+  AutoSizeResultsColumns(200);
+
+  Log('Search finished.');
+end;
+
+
+
+procedure TMainForm.MenuItemPreferencesClick(Sender: TObject);
+begin
+  Log('Preferences clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
+begin
+  Log('Open Search clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemSaveClick(Sender: TObject);
+begin
+  Log('Save Search clicked (not implemented yet).');
+end;
+
+procedure TMainForm.MenuItemSaveAsClick(Sender: TObject);
+begin
+  Log('Save Search As clicked (not implemented yet).');
+end;
+
+
+procedure TMainForm.MenuItemExportClick(Sender: TObject);
+begin
+  Log('Export clicked (dialog not implemented yet).');
+  // Next commit: show Search dialog and run scan
+end;
+
+
+procedure TMainForm.MenuItemExitClick(Sender: TObject);
+begin
+  Close;
 end;
 
 end.
