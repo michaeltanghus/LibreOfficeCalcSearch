@@ -14,9 +14,9 @@ object MainForm: TMainForm
     Height = 364
     Top = 0
     Width = 981
-    ActivePage = TabLog
+    ActivePage = TabResults
     Align = alClient
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 0
     object TabResults: TTabSheet
       Caption = 'Results'
@@ -29,7 +29,7 @@ object MainForm: TMainForm
         Width = 971
         Align = alClient
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goSmoothScroll]
-        RowCount = 2
+        RowCount = 1
         TabOrder = 0
         OnSelectCell = GridResultsSelectCell
       end

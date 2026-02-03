@@ -20,6 +20,7 @@ type
     chkMatchCase: TCheckBox;
     chkWholeWord: TCheckBox;
     chkRegex: TCheckBox;
+    cbFileType: TComboBox;
     edtMask: TEdit;
     edtQuery: TEdit;
     edtDirectory: TEdit;
@@ -59,11 +60,13 @@ procedure TSearchForm.FormCreate(Sender: TObject);
 begin
 
 end;
+
+
 function TSearchForm.BuildCriteria: TSearchCriteria;
 begin
   Result.QueryText := edtQuery.Text;
   Result.Directory := edtDirectory.Text;
-  Result.FileMask := edtMask.Text;
+  Result.FileMask := (edtMask.Text + '.' + cbFileType.Items[cbFileType.ItemIndex]);
   Result.SearchSubfolders := chkSubfolders.Checked;
 
   Result.MatchCase := chkMatchCase.Checked;

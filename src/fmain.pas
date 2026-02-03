@@ -154,7 +154,7 @@ end;
 
 procedure TMainForm.ClearResultsGrid;
 begin
-  GridResults.RowCount := 2;
+  GridResults.RowCount := 1;
   SetGridRowHitPtr(1, nil);
   MemoDetails.Clear;
 end;

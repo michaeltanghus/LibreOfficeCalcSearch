@@ -1,7 +1,7 @@
 object SearchForm: TSearchForm
-  Left = 2478
+  Left = 2564
   Height = 358
-  Top = 684
+  Top = 389
   Width = 714
   Caption = 'Find What'
   ClientHeight = 358
@@ -19,7 +19,7 @@ object SearchForm: TSearchForm
     Left = 112
     Height = 36
     Top = 8
-    Width = 224
+    Width = 288
     TabOrder = 0
     Text = 'edtQuery'
   end
@@ -34,15 +34,15 @@ object SearchForm: TSearchForm
     Left = 112
     Height = 36
     Top = 56
-    Width = 224
+    Width = 288
     TabOrder = 1
     Text = '/home/michael/marmic/Dokumenter/Dokumenter_med_backup/marmic_håndbryg'
   end
   object btnBrowseDir: TButton
-    Left = 344
-    Height = 25
-    Top = 64
-    Width = 25
+    Left = 400
+    Height = 36
+    Top = 56
+    Width = 36
     Caption = '...'
     TabOrder = 2
     OnClick = btnBrowseDirClick
@@ -60,7 +60,6 @@ object SearchForm: TSearchForm
     Top = 112
     Width = 224
     TabOrder = 3
-    Text = '*.ods'
   end
   object chkSubfolders: TCheckBox
     Left = 16
@@ -155,6 +154,21 @@ object SearchForm: TSearchForm
       Caption = 'Whole column'
       TabOrder = 2
     end
+  end
+  object cbFileType: TComboBox
+    Left = 336
+    Height = 36
+    Top = 112
+    Width = 100
+    ItemHeight = 0
+    ItemIndex = 0
+    Items.Strings = (
+      'ods'
+      'xls'
+      'xlsx'
+    )
+    TabOrder = 11
+    Text = 'ods'
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
     Left = 656
