@@ -1,0 +1,23 @@
+# Lazarus / FPC build artifacts
+*.ppu
+*.o
+*.or
+*.a
+*.so
+*.dll
+*.exe
+*.dbg
+
+# Lazarus session / backups
+*.lps
+backup/
+lib/
+
+# Common output folders
+bin/
+out/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
