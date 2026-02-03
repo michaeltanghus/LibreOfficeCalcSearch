@@ -8,7 +8,8 @@ uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, Menus,
   ComCtrls, StdCtrls, Grids, ExtCtrls, Types,
   Process, URIParser, FileUtil,
-  uModels, usearchengine, fsearch;
+  uModels, usearchengine, fsearch,
+  uAppPrefs, fpreferences;
 
 type
   PSearchHit = ^TSearchHit;
@@ -75,6 +76,7 @@ type
 
     function BuildLibreOfficeTargetUrl(const AHitPtr: PSearchHit): string;
     procedure OpenHitInLibreOffice(const AHitPtr: PSearchHit);
+    procedure OpenSearchAsync(Data: PtrInt);
 
   public
   end;
@@ -119,6 +121,8 @@ begin
   PageControl1.ActivePage := TabResults;
 
   Log('Application started.');
+  if AppPrefs.AutoOpenSearchDialog then
+    Application.QueueAsyncCall(@OpenSearchAsync, 0);
 end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
@@ -305,6 +309,11 @@ begin
   Result := FileUrl + '#$''' + SheetEsc + '''.' + AHitPtr^.CellA1;
 end;
 
+procedure TMainForm.OpenSearchAsync(Data: PtrInt);
+begin
+  MenuItemNewSearchClick(Self);  // or nil
+end;
+
 procedure TMainForm.OpenHitInLibreOffice(const AHitPtr: PSearchHit);
 var
   TargetUrl: string;
@@ -380,8 +389,18 @@ begin
 end;
 
 procedure TMainForm.MenuItemPreferencesClick(Sender: TObject);
+var
+  PrefForm: TPreferencesForm;
 begin
-  Log('Preferences clicked (not implemented yet).');
+  PrefForm := TPreferencesForm.Create(Self);
+  try
+    if PrefForm.ShowModal = mrOK then
+      Log('Preferences saved.')
+    else
+      Log('Preferences canceled.');
+  finally
+    PrefForm.Free;
+  end;
 end;
 
 procedure TMainForm.MenuItemOpenSearchClick(Sender: TObject);
@@ -421,6 +440,7 @@ begin
     end;
 
     Crit := SearchForm.BuildCriteria;
+
   finally
     SearchForm.Free;
   end;

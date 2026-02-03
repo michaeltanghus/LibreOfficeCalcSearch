@@ -6,7 +6,9 @@ interface
 
 uses
   Classes, SysUtils, StrUtils, Masks, RegExpr, LazUTF8,
-  fpstypes, fpspreadsheet, fpsallformats, fpsutils,
+  fpstypes, fpspreadsheet,
+  // fpsallformats,
+  fpsutils,
   uModels;
 
 type

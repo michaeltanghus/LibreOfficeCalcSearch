@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1995
+  Left = 2210
   Height = 565
-  Top = 288
+  Top = 443
   Width = 981
   Caption = 'LibreOffice Calc Search'
   ClientHeight = 565

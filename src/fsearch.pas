@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ExtCtrls,
-  uModels;
+  uModels, uAppPrefs;
 
 type
 
@@ -20,9 +20,9 @@ type
     chkWholeWord: TCheckBox;
     cbFileType: TComboBox;
     cbSearchSubfolders: TComboBox;
+    cmbDirectory: TComboBox;
     edtMask: TEdit;
     edtQuery: TEdit;
-    edtDirectory: TEdit;
     Label1: TLabel;
     rbRegex: TRadioButton;
     rbNormal: TRadioButton;
@@ -50,21 +50,40 @@ implementation
 
 procedure TSearchForm.btnBrowseDirClick(Sender: TObject);
 begin
-  SelectDirectoryDialog1.InitialDir := edtDirectory.Text;  // optional
+  SelectDirectoryDialog1.InitialDir := cmbDirectory.Text;
+
   if SelectDirectoryDialog1.Execute then
-    edtDirectory.Text := SelectDirectoryDialog1.FileName;
+  begin
+    cmbDirectory.Text := SelectDirectoryDialog1.FileName;  // REPLACE
+    cmbDirectory.SelStart := Length(cmbDirectory.Text);    // caret at end (optional)
+    cmbDirectory.SelLength := 0;
+  end;
 end;
 
 procedure TSearchForm.FormCreate(Sender: TObject);
+var
+  InitialDir: string;
 begin
+  cmbDirectory.Items.BeginUpdate;
+  try
+    cmbDirectory.Items.Clear;
+    cmbDirectory.Items.AddStrings(AppPrefs.RecentDirectories);
+  finally
+    cmbDirectory.Items.EndUpdate;
+  end;
 
+  InitialDir := AppPrefs.LastSearchDirectory;
+  if (InitialDir = '') or (not DirectoryExists(InitialDir)) then
+    InitialDir := AppPrefs.DefaultSearchDirectory;
+
+  cmbDirectory.Text := InitialDir;
 end;
 
 
 function TSearchForm.BuildCriteria: TSearchCriteria;
 begin
   Result.QueryText := edtQuery.Text;
-  Result.Directory := edtDirectory.Text;
+  Result.Directory := cmbDirectory.SelText;
   Result.FileMask := (edtMask.Text + '.' + cbFileType.Items[cbFileType.ItemIndex]);
 
   if (cbSearchSubfolders.Items[cbSearchSubfolders.ItemIndex] = '0') then

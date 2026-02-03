@@ -1,0 +1,65 @@
+object PreferencesForm: TPreferencesForm
+  Left = 2677
+  Height = 140
+  Top = 202
+  Width = 520
+  Caption = 'Preferences'
+  ClientHeight = 140
+  ClientWidth = 520
+  Position = poScreenCenter
+  LCLVersion = '4.4.0.0'
+  OnShow = FormShow
+  object chkAutoOpenSearch: TCheckBox
+    Left = 16
+    Height = 23
+    Top = 16
+    Width = 320
+    Caption = 'Open Search Box automatically on startup'
+    TabOrder = 0
+  end
+  object LabelDefaultDir: TLabel
+    Left = 16
+    Height = 19
+    Top = 52
+    Width = 169
+    Caption = 'Default search directory'
+  end
+  object edtDefaultDir: TEdit
+    Left = 16
+    Height = 36
+    Top = 72
+    Width = 440
+    TabOrder = 1
+  end
+  object btnBrowseDir: TButton
+    Left = 464
+    Height = 26
+    Top = 72
+    Width = 40
+    Caption = '...'
+    TabOrder = 2
+    OnClick = btnBrowseDirClick
+  end
+  object btnOK: TButton
+    Left = 344
+    Height = 25
+    Top = 108
+    Width = 75
+    Caption = 'OK'
+    TabOrder = 3
+    OnClick = btnOKClick
+  end
+  object btnCancel: TButton
+    Left = 428
+    Height = 25
+    Top = 108
+    Width = 75
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Left = 400
+    Top = 16
+  end
+end
