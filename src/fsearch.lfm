@@ -1,11 +1,11 @@
 object SearchForm: TSearchForm
   Left = 2564
-  Height = 358
+  Height = 322
   Top = 389
-  Width = 714
+  Width = 522
   Caption = 'Find What'
-  ClientHeight = 358
-  ClientWidth = 714
+  ClientHeight = 322
+  ClientWidth = 522
   LCLVersion = '4.4.0.0'
   OnCreate = FormCreate
   object LabelWhatToFind: TLabel
@@ -19,9 +19,8 @@ object SearchForm: TSearchForm
     Left = 112
     Height = 36
     Top = 8
-    Width = 288
+    Width = 400
     TabOrder = 0
-    Text = 'edtQuery'
   end
   object LabelDirectory: TLabel
     Left = 16
@@ -34,12 +33,12 @@ object SearchForm: TSearchForm
     Left = 112
     Height = 36
     Top = 56
-    Width = 288
+    Width = 360
     TabOrder = 1
-    Text = '/home/michael/marmic/Dokumenter/Dokumenter_med_backup/marmic_håndbryg'
+    Text = '/home'
   end
   object btnBrowseDir: TButton
-    Left = 400
+    Left = 472
     Height = 36
     Top = 56
     Width = 36
@@ -58,105 +57,45 @@ object SearchForm: TSearchForm
     Left = 112
     Height = 36
     Top = 112
-    Width = 224
+    Width = 296
     TabOrder = 3
   end
-  object chkSubfolders: TCheckBox
-    Left = 16
-    Height = 23
-    Top = 168
-    Width = 155
-    Caption = 'Search Subfolders'
-    TabOrder = 4
-  end
   object chkMatchCase: TCheckBox
-    Left = 16
+    Left = 216
     Height = 23
-    Top = 200
+    Top = 176
     Width = 109
     Caption = 'Match Case'
-    TabOrder = 5
+    TabOrder = 4
   end
   object chkWholeWord: TCheckBox
-    Left = 16
+    Left = 216
     Height = 23
-    Top = 232
+    Top = 208
     Width = 112
     Caption = 'Whole Word'
-    TabOrder = 6
-  end
-  object chkRegex: TCheckBox
-    Left = 16
-    Height = 23
-    Top = 264
-    Width = 101
-    Caption = 'Use Regex'
-    TabOrder = 7
+    TabOrder = 5
   end
   object btnCancel: TButton
-    Left = 448
+    Left = 320
     Height = 25
-    Top = 304
+    Top = 288
     Width = 75
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 8
+    TabOrder = 6
   end
   object btnSearch: TButton
-    Left = 560
+    Left = 424
     Height = 25
-    Top = 304
+    Top = 288
     Width = 75
     Caption = 'Search'
     ModalResult = 1
-    TabOrder = 9
-  end
-  object RadioGroupResultMode: TRadioGroup
-    Left = 192
-    Height = 105
-    Top = 182
-    Width = 185
-    AutoFill = True
-    Caption = 'RadioGroupResultMode'
-    ChildSizing.LeftRightSpacing = 6
-    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
-    ChildSizing.EnlargeVertical = crsHomogenousChildResize
-    ChildSizing.ShrinkHorizontal = crsScaleChilds
-    ChildSizing.ShrinkVertical = crsScaleChilds
-    ChildSizing.Layout = cclLeftToRightThenTopToBottom
-    ChildSizing.ControlsPerLine = 1
-    ClientHeight = 85
-    ClientWidth = 183
-    TabOrder = 10
-    object rbCellOnly: TRadioButton
-      Left = 6
-      Height = 28
-      Top = 0
-      Width = 171
-      Caption = 'Cell only'
-      Checked = True
-      TabOrder = 0
-      TabStop = True
-    end
-    object rbWholeRow: TRadioButton
-      Left = 6
-      Height = 29
-      Top = 28
-      Width = 171
-      Caption = 'Whole row'
-      TabOrder = 1
-    end
-    object rbWholeColumn: TRadioButton
-      Left = 6
-      Height = 28
-      Top = 57
-      Width = 171
-      Caption = 'Whole column'
-      TabOrder = 2
-    end
+    TabOrder = 7
   end
   object cbFileType: TComboBox
-    Left = 336
+    Left = 408
     Height = 36
     Top = 112
     Width = 100
@@ -167,11 +106,68 @@ object SearchForm: TSearchForm
       'xls'
       'xlsx'
     )
-    TabOrder = 11
+    TabOrder = 8
     Text = 'ods'
   end
+  object rgSearchMode: TRadioGroup
+    Left = 16
+    Height = 105
+    Top = 160
+    Width = 185
+    AutoFill = True
+    Caption = 'Search Mode'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 85
+    ClientWidth = 183
+    TabOrder = 9
+    object rbNormal: TRadioButton
+      Left = 6
+      Height = 42
+      Top = 0
+      Width = 171
+      Caption = 'Normal'
+      Checked = True
+      TabOrder = 0
+    end
+    object rbRegex: TRadioButton
+      Left = 6
+      Height = 43
+      Top = 42
+      Width = 171
+      Caption = 'Use Regex'
+      TabOrder = 1
+    end
+  end
+  object cbSearchSubfolders: TComboBox
+    Left = 408
+    Height = 36
+    Top = 229
+    Width = 68
+    ItemHeight = 0
+    ItemIndex = 0
+    Items.Strings = (
+      '0'
+      '1'
+      '2'
+      '3'
+      '∞'
+    )
+    TabOrder = 10
+    Text = '0'
+  end
+  object Label1: TLabel
+    Left = 216
+    Height = 19
+    Top = 240
+    Width = 166
+    Caption = 'Search Subfolders level'
+  end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
-    Left = 656
-    Top = 16
   end
 end

@@ -34,14 +34,11 @@ On loading program Search Box open automatically, if the user want to load a sav
 - Depth 0-#  0 = no sub folders  or tick box for In all sub folders  
 - Tick box for "Match whole word only" and "Match Case"
 - Radio buttons search mode "normal" or "Regular expression"
-- Result Radio buttons 
-  "Result only", 
-  "Whole row" (the whole row the result is found in)'
-  "Whole column" (the whole column the result is found in)'
 
 #### Preferences contains.
 
 - Search Box open automatically tick box.
+- Default search Directory
 
 ### Main window contains
 

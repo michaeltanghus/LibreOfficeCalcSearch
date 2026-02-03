@@ -16,21 +16,20 @@ type
     btnBrowseDir: TButton;
     btnCancel: TButton;
     btnSearch: TButton;
-    chkSubfolders: TCheckBox;
     chkMatchCase: TCheckBox;
     chkWholeWord: TCheckBox;
-    chkRegex: TCheckBox;
     cbFileType: TComboBox;
+    cbSearchSubfolders: TComboBox;
     edtMask: TEdit;
     edtQuery: TEdit;
     edtDirectory: TEdit;
-    RadioGroupResultMode: TRadioGroup;
+    Label1: TLabel;
+    rbRegex: TRadioButton;
+    rbNormal: TRadioButton;
+    rgSearchMode: TRadioGroup;
     LabelWhatToFind: TLabel;
     LabelDirectory: TLabel;
     LabelFileMask: TLabel;
-    rbCellOnly: TRadioButton;
-    rbWholeRow: TRadioButton;
-    rbWholeColumn: TRadioButton;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure btnBrowseDirClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -67,18 +66,21 @@ begin
   Result.QueryText := edtQuery.Text;
   Result.Directory := edtDirectory.Text;
   Result.FileMask := (edtMask.Text + '.' + cbFileType.Items[cbFileType.ItemIndex]);
-  Result.SearchSubfolders := chkSubfolders.Checked;
+
+  if (cbSearchSubfolders.Items[cbSearchSubfolders.ItemIndex] = '0') then
+    Result.SearchSubfolders := false
+  else
+    Result.SearchSubfolders := true;
 
   Result.MatchCase := chkMatchCase.Checked;
   Result.WholeWord := chkWholeWord.Checked;
-  Result.UseRegex := chkRegex.Checked;
+  Result.ResultMode := rmCellOnly;
 
-  case RadioGroupResultMode.ItemIndex of
-    1: Result.ResultMode := rmWholeRow;
-    2: Result.ResultMode := rmWholeColumn;
+  if (rbNormal.Checked) then
+    Result.UseRegex :=  false
   else
-    Result.ResultMode := rmCellOnly;
-  end;
+    Result.UseRegex := true;
+
 end;
 
 end.
