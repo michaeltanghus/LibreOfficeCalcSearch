@@ -439,6 +439,7 @@ begin
       Exit;
     end;
 
+    // Criteria are build in fsearch BuildCriteria
     Crit := SearchForm.BuildCriteria;
 
     case Crit.ResultMode of

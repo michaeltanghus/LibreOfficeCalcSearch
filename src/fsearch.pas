@@ -37,6 +37,7 @@ type
     LabelFileMask: TLabel;
     SelectDirectoryDialog1: TSelectDirectoryDialog;
     procedure btnBrowseDirClick(Sender: TObject);
+    procedure cmbEditChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
 
@@ -65,6 +66,20 @@ begin
   end;
 end;
 
+procedure TSearchForm.cmbEditChange(Sender: TObject);
+var
+  S: string;
+begin
+  S := cmbEdit.Text;
+
+  // If the query has leading/trailing spaces, do NOT trim.
+  // Otherwise default to trim.
+  if (S <> Trim(S)) then
+    cbTrim.Checked := False
+  else
+    cbTrim.Checked := True;
+end;
+
 procedure TSearchForm.FormCreate(Sender: TObject);
 var
   InitialQuery: string;
@@ -79,8 +94,17 @@ begin
     cmbEdit.Items.EndUpdate;
   end;
 
+
   InitialQuery := AppPrefs.LastQuery;
   cmbEdit.Text := InitialQuery;
+
+  // If the query has leading/trailing spaces, do NOT trim.
+  // Otherwise default to trim.
+  if (cmbEdit.Text <> Trim(cmbEdit.Text)) then
+    cbTrim.Checked := False
+  else
+    cbTrim.Checked := True;
+
 
   // Directory history
   cmbDirectory.Items.BeginUpdate;
@@ -142,6 +166,7 @@ begin
     Result.UseRegex := true;
 
 end;
+
 
 end.
 

@@ -214,6 +214,7 @@ object SearchForm: TSearchForm
     ItemHeight = 0
     TabOrder = 11
     Text = 'cmbEdit'
+    OnChange = cmbEditChange
   end
   object cbTrim: TCheckBox
     Left = 16

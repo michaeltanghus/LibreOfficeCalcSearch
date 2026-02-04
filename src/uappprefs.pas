@@ -198,9 +198,12 @@ var
   Clean: string;
   Index: Integer;
 begin
-  Clean := Trim(Query);
-  if Clean = '' then
-    Exit;
+  Clean := Query;
+//  Clean := Trim(Query);
+//  if Clean = '' then
+//    Exit;
+
+  if (Clean = '') then Exit;
 
   Index := FRecentQueries.IndexOf(Clean);
   if Index >= 0 then
