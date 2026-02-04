@@ -441,6 +441,12 @@ begin
 
     Crit := SearchForm.BuildCriteria;
 
+    case Crit.ResultMode of
+      rmCellOnly:   Log('ResultMode = CellOnly');
+      rmWholeRow:   Log('ResultMode = WholeRow');
+      rmWholeColumn:Log('ResultMode = WholeColumn');
+    end;
+
   finally
     SearchForm.Free;
   end;
@@ -450,6 +456,11 @@ begin
     Log('Invalid directory: ' + Crit.Directory);
     Exit;
   end;
+
+  // Remember directory for next search + next app start
+  AppPrefs.LastSearchDirectory := Crit.Directory;
+  AppPrefs.AddRecentDirectory(Crit.Directory);
+  AppPrefs.Save;
 
   PageControl1.ActivePage := TabResults;
 

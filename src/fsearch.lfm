@@ -1,10 +1,10 @@
 object SearchForm: TSearchForm
   Left = 2564
-  Height = 322
+  Height = 328
   Top = 389
   Width = 522
   Caption = 'Find What'
-  ClientHeight = 322
+  ClientHeight = 328
   ClientWidth = 522
   LCLVersion = '4.4.0.0'
   OnCreate = FormCreate
@@ -69,7 +69,7 @@ object SearchForm: TSearchForm
     TabOrder = 4
   end
   object btnCancel: TButton
-    Left = 320
+    Left = 288
     Height = 25
     Top = 288
     Width = 75
@@ -78,7 +78,7 @@ object SearchForm: TSearchForm
     TabOrder = 5
   end
   object btnSearch: TButton
-    Left = 424
+    Left = 408
     Height = 25
     Top = 288
     Width = 75
@@ -103,7 +103,7 @@ object SearchForm: TSearchForm
   end
   object rgSearchMode: TRadioGroup
     Left = 16
-    Height = 105
+    Height = 64
     Top = 160
     Width = 185
     AutoFill = True
@@ -115,12 +115,12 @@ object SearchForm: TSearchForm
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 85
+    ClientHeight = 44
     ClientWidth = 183
     TabOrder = 8
     object rbNormal: TRadioButton
       Left = 6
-      Height = 42
+      Height = 22
       Top = 0
       Width = 171
       Caption = 'Normal'
@@ -130,8 +130,8 @@ object SearchForm: TSearchForm
     end
     object rbRegex: TRadioButton
       Left = 6
-      Height = 43
-      Top = 42
+      Height = 22
+      Top = 22
       Width = 171
       Caption = 'Use Regex'
       TabOrder = 1
@@ -169,6 +169,49 @@ object SearchForm: TSearchForm
     ItemHeight = 0
     TabOrder = 10
     Text = 'cmbDirectory'
+  end
+  object RadioGroupResultMode: TRadioGroup
+    Left = 16
+    Height = 84
+    Top = 229
+    Width = 186
+    AutoFill = True
+    Caption = 'Result Mode'
+    ChildSizing.LeftRightSpacing = 6
+    ChildSizing.EnlargeHorizontal = crsHomogenousChildResize
+    ChildSizing.EnlargeVertical = crsHomogenousChildResize
+    ChildSizing.ShrinkHorizontal = crsScaleChilds
+    ChildSizing.ShrinkVertical = crsScaleChilds
+    ChildSizing.Layout = cclLeftToRightThenTopToBottom
+    ChildSizing.ControlsPerLine = 1
+    ClientHeight = 64
+    ClientWidth = 184
+    TabOrder = 11
+    object rbCellOnly: TRadioButton
+      Left = 6
+      Height = 21
+      Top = 0
+      Width = 172
+      Caption = 'Cell only'
+      Checked = True
+      TabOrder = 0
+    end
+    object rbWholeRow: TRadioButton
+      Left = 6
+      Height = 22
+      Top = 21
+      Width = 172
+      Caption = 'Row'
+      TabOrder = 1
+    end
+    object rbWholeColumn: TRadioButton
+      Left = 6
+      Height = 21
+      Top = 43
+      Width = 172
+      Caption = 'Column'
+      TabOrder = 2
+    end
   end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
   end

@@ -24,6 +24,10 @@ type
     edtMask: TEdit;
     edtQuery: TEdit;
     Label1: TLabel;
+    rbWholeColumn: TRadioButton;
+    rbWholeRow: TRadioButton;
+    rbCellOnly: TRadioButton;
+    RadioGroupResultMode: TRadioGroup;
     rbRegex: TRadioButton;
     rbNormal: TRadioButton;
     rgSearchMode: TRadioGroup;
@@ -83,7 +87,7 @@ end;
 function TSearchForm.BuildCriteria: TSearchCriteria;
 begin
   Result.QueryText := edtQuery.Text;
-  Result.Directory := cmbDirectory.SelText;
+  Result.Directory := Trim(cmbDirectory.Text);
   Result.FileMask := (edtMask.Text + '.' + cbFileType.Items[cbFileType.ItemIndex]);
 
   if (cbSearchSubfolders.Items[cbSearchSubfolders.ItemIndex] = '0') then
@@ -93,7 +97,13 @@ begin
 
   Result.MatchCase := chkMatchCase.Checked;
   Result.WholeWord := chkWholeWord.Checked;
-  Result.ResultMode := rmCellOnly;
+
+  if rbWholeRow.Checked then
+    Result.ResultMode := rmWholeRow
+  else if rbWholeColumn.Checked then
+    Result.ResultMode := rmWholeColumn
+  else
+    Result.ResultMode := rmCellOnly;
 
   if (rbNormal.Checked) then
     Result.UseRegex :=  false

@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, StrUtils, Masks, RegExpr, LazUTF8,
   fpstypes, fpspreadsheet,
-  // fpsallformats,
+  fpsallformats,
   fpsutils,
   uModels;
 
