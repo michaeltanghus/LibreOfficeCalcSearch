@@ -59,6 +59,18 @@
         <Filename Value="usearchengine.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit>
+      <Unit>
+        <Filename Value="uappprefs.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="uAppPrefs"/>
+      </Unit>
+      <Unit>
+        <Filename Value="fpreferences.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="PreferencesForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

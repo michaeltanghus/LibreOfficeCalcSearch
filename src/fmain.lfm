@@ -1,7 +1,7 @@
 object MainForm: TMainForm
-  Left = 1995
+  Left = 1978
   Height = 565
-  Top = 288
+  Top = 475
   Width = 981
   Caption = 'LibreOffice Calc Search'
   ClientHeight = 565
@@ -82,23 +82,27 @@ object MainForm: TMainForm
     object MenuItemFile: TMenuItem
       Caption = 'File'
       object MenuItemNewSearch: TMenuItem
-        Caption = 'New Search'
+        Caption = 'Search'
         OnClick = MenuItemNewSearchClick
       end
       object MenuItemOpenSearch: TMenuItem
         Caption = 'Open Search'
+        Visible = False
         OnClick = MenuItemOpenSearchClick
       end
       object MenuItemSave: TMenuItem
         Caption = 'Save'
+        Visible = False
         OnClick = MenuItemSaveClick
       end
       object MenuItemSaveAs: TMenuItem
         Caption = 'Save As'
+        Visible = False
         OnClick = MenuItemSaveAsClick
       end
       object MenuItemExport: TMenuItem
         Caption = 'Export'
+        Visible = False
         OnClick = MenuItemExportClick
       end
       object MenuItemExit: TMenuItem

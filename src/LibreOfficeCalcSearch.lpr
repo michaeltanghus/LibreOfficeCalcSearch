@@ -10,7 +10,7 @@ uses
   athreads,
   {$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, fmain, fsearch, uModels, uSearchEngine
+  Forms, fmain, fsearch, uModels, uSearchEngine, uAppPrefs, fpreferences
   { you can add units after this };
 
 {$R *.res}
@@ -23,7 +23,8 @@ begin
   {$POP}
   Application.Initialize;
   Application.CreateForm(TMainForm, MainForm);
-  Application.CreateForm(TSearchForm, SearchForm);
+  //Application.CreateForm(TSearchForm, SearchForm);
+  Application.CreateForm(TPreferencesForm, PreferencesForm);
   Application.Run;
 end.
 
