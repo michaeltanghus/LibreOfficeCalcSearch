@@ -15,11 +15,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Install Lazarus + FPC
       - name: Install Lazarus
-        uses: ollydev/setup-lazarus@v4
+        uses: sxmxta/lazarus@v1
+        with:
+          lazarus-version: stable
 
-      # Build your Lazarus project
       - name: Build
         run: |
           lazbuild --version
