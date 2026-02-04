@@ -21,22 +21,22 @@ jobs:
           lazarus-version: "stable"
           with-cache: false
 
-      # Get FPSpreadsheet (contains laz_fpspreadsheet.lpk)
+      # Bring in FPSpreadsheet sources (contains laz_fpspreadsheet.lpk)
       - name: Checkout FPSpreadsheet
         uses: actions/checkout@v4
         with:
           repository: tcs-ulli/fpspreadsheet
           path: thirdparty/fpspreadsheet
 
-      # Use a local Lazarus config folder for the build
-      - name: Register FPSpreadsheet package
+      # Link runtime package into Lazarus config (do NOT "install" it)
+      - name: Link FPSpreadsheet package
+        shell: bash
         run: |
           lazbuild --version
-          lazbuild --pcp="${{ github.workspace }}/.lazarus" --add-package "thirdparty/fpspreadsheet/laz_fpspreadsheet.lpk"
-          lazbuild --pcp="${{ github.workspace }}/.lazarus" "thirdparty/fpspreadsheet/laz_fpspreadsheet.lpk"
-        shell: bash
+          lazbuild --pcp="${{ github.workspace }}/.lazarus" \
+                   --add-package-link "thirdparty/fpspreadsheet/laz_fpspreadsheet.lpk"
 
       - name: Build project
+        shell: bash
         run: |
           lazbuild --pcp="${{ github.workspace }}/.lazarus" -B "src/LibreOfficeCalcSearch.lpi"
-        shell: bash
