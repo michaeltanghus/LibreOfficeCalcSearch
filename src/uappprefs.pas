@@ -15,6 +15,8 @@ type
     FLastSearchDirectory: string;
     FRecentDirectories: TStringList;
     FConfigFileName: string;
+    FLastQuery: string;
+    FRecentQueries: TStringList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -34,6 +36,10 @@ type
 
     property RecentDirectories: TStringList
       read FRecentDirectories;
+    procedure AddRecentQuery(const Query: string);
+
+    property LastQuery: string read FLastQuery write FLastQuery;
+    property RecentQueries: TStringList read FRecentQueries;
   end;
 
 function AppPrefs: TAppPreferences;
@@ -62,12 +68,16 @@ begin
   FDefaultSearchDirectory := GetUserDir;
   FLastSearchDirectory := '';
 
+  FRecentQueries := TStringList.Create;
+  FLastQuery := '';
+
   Load;
 end;
 
 destructor TAppPreferences.Destroy;
 begin
   FRecentDirectories.Free;
+  FRecentQueries.Free;
   inherited Destroy;
 end;
 
@@ -98,6 +108,21 @@ begin
     for I := FRecentDirectories.Count - 1 downto 0 do
       if Trim(FRecentDirectories[I]) = '' then
         FRecentDirectories.Delete(I);
+
+    FLastQuery := Cfg.GetValue('search/last_query', '');
+
+    FRecentQueries.Clear;
+    Count := Cfg.GetValue('search/recent_queries/count', 0);
+    for I := 0 to Count - 1 do
+    begin
+      Key := Format('search/recent_queries/q%d', [I]);
+      FRecentQueries.Add(Cfg.GetValue(Key, ''));
+    end;
+
+    // Remove empties
+    for I := FRecentQueries.Count - 1 downto 0 do
+      if Trim(FRecentQueries[I]) = '' then
+        FRecentQueries.Delete(I);
 
   finally
     Cfg.Free;
@@ -130,6 +155,19 @@ begin
       Cfg.SetValue(Key, FRecentDirectories[I]);
     end;
 
+    Cfg.SetValue('search/last_query', FLastQuery);
+
+    MaxCount := FRecentQueries.Count;
+    if MaxCount > 25 then
+      MaxCount := 25;
+
+    Cfg.SetValue('search/recent_queries/count', MaxCount);
+    for I := 0 to MaxCount - 1 do
+    begin
+      Key := Format('search/recent_queries/q%d', [I]);
+      Cfg.SetValue(Key, FRecentQueries[I]);
+    end;
+
     Cfg.Flush;
   finally
     Cfg.Free;
@@ -153,6 +191,25 @@ begin
 
   while FRecentDirectories.Count > 25 do
     FRecentDirectories.Delete(FRecentDirectories.Count - 1);
+end;
+
+procedure TAppPreferences.AddRecentQuery(const Query: string);
+var
+  Clean: string;
+  Index: Integer;
+begin
+  Clean := Trim(Query);
+  if Clean = '' then
+    Exit;
+
+  Index := FRecentQueries.IndexOf(Clean);
+  if Index >= 0 then
+    FRecentQueries.Delete(Index);
+
+  FRecentQueries.Insert(0, Clean);
+
+  while FRecentQueries.Count > 25 do
+    FRecentQueries.Delete(FRecentQueries.Count - 1);
 end;
 
 finalization

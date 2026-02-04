@@ -16,13 +16,14 @@ type
     btnBrowseDir: TButton;
     btnCancel: TButton;
     btnSearch: TButton;
+    cbTrim: TCheckBox;
     chkMatchCase: TCheckBox;
     chkWholeWord: TCheckBox;
     cbFileType: TComboBox;
     cbSearchSubfolders: TComboBox;
     cmbDirectory: TComboBox;
+    cmbEdit: TComboBox;
     edtMask: TEdit;
-    edtQuery: TEdit;
     Label1: TLabel;
     rbWholeColumn: TRadioButton;
     rbWholeRow: TRadioButton;
@@ -66,8 +67,22 @@ end;
 
 procedure TSearchForm.FormCreate(Sender: TObject);
 var
+  InitialQuery: string;
   InitialDir: string;
 begin
+  // Query history
+  cmbEdit.Items.BeginUpdate;
+  try
+    cmbEdit.Items.Clear;
+    cmbEdit.Items.AddStrings(AppPrefs.RecentQueries);
+  finally
+    cmbEdit.Items.EndUpdate;
+  end;
+
+  InitialQuery := AppPrefs.LastQuery;
+  cmbEdit.Text := InitialQuery;
+
+  // Directory history
   cmbDirectory.Items.BeginUpdate;
   try
     cmbDirectory.Items.Clear;
@@ -85,8 +100,24 @@ end;
 
 
 function TSearchForm.BuildCriteria: TSearchCriteria;
+var
+  RawQuery: string;
 begin
-  Result.QueryText := edtQuery.Text;
+  // Query
+  RawQuery := cmbEdit.Text;   // preserve exactly as typed
+
+  // Always prevent "empty" query (only whitespace)
+  if Trim(RawQuery) = '' then
+    raise Exception.Create('Query is empty.');
+
+  // Apply trim only if user requested it
+  if cbTrim.Checked then
+    Result.QueryText := Trim(RawQuery)
+  else
+    Result.QueryText := RawQuery;
+
+//  Result.QueryText := cmbEdit.Text;
+
   Result.Directory := Trim(cmbDirectory.Text);
   Result.FileMask := (edtMask.Text + '.' + cbFileType.Items[cbFileType.ItemIndex]);
 

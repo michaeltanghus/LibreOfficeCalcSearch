@@ -11,16 +11,9 @@ object SearchForm: TSearchForm
   object LabelWhatToFind: TLabel
     Left = 16
     Height = 19
-    Top = 16
+    Top = 8
     Width = 85
     Caption = 'What to find'
-  end
-  object edtQuery: TEdit
-    Left = 112
-    Height = 36
-    Top = 8
-    Width = 400
-    TabOrder = 0
   end
   object LabelDirectory: TLabel
     Left = 16
@@ -32,10 +25,10 @@ object SearchForm: TSearchForm
   object btnBrowseDir: TButton
     Left = 472
     Height = 36
-    Top = 56
+    Top = 55
     Width = 36
     Caption = '...'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = btnBrowseDirClick
   end
   object LabelFileMask: TLabel
@@ -48,9 +41,9 @@ object SearchForm: TSearchForm
   object edtMask: TEdit
     Left = 112
     Height = 36
-    Top = 112
+    Top = 104
     Width = 296
-    TabOrder = 2
+    TabOrder = 1
   end
   object chkMatchCase: TCheckBox
     Left = 216
@@ -58,7 +51,7 @@ object SearchForm: TSearchForm
     Top = 176
     Width = 109
     Caption = 'Match Case'
-    TabOrder = 3
+    TabOrder = 2
   end
   object chkWholeWord: TCheckBox
     Left = 216
@@ -66,7 +59,7 @@ object SearchForm: TSearchForm
     Top = 208
     Width = 112
     Caption = 'Whole Word'
-    TabOrder = 4
+    TabOrder = 3
   end
   object btnCancel: TButton
     Left = 288
@@ -75,7 +68,7 @@ object SearchForm: TSearchForm
     Width = 75
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 5
+    TabOrder = 4
   end
   object btnSearch: TButton
     Left = 408
@@ -84,12 +77,12 @@ object SearchForm: TSearchForm
     Width = 75
     Caption = 'Search'
     ModalResult = 1
-    TabOrder = 6
+    TabOrder = 5
   end
   object cbFileType: TComboBox
     Left = 408
     Height = 36
-    Top = 112
+    Top = 104
     Width = 100
     ItemHeight = 0
     ItemIndex = 0
@@ -98,7 +91,7 @@ object SearchForm: TSearchForm
       'xls'
       'xlsx'
     )
-    TabOrder = 7
+    TabOrder = 6
     Text = 'ods'
   end
   object rgSearchMode: TRadioGroup
@@ -117,7 +110,7 @@ object SearchForm: TSearchForm
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 44
     ClientWidth = 183
-    TabOrder = 8
+    TabOrder = 7
     object rbNormal: TRadioButton
       Left = 6
       Height = 22
@@ -151,7 +144,7 @@ object SearchForm: TSearchForm
       '3'
       '∞'
     )
-    TabOrder = 9
+    TabOrder = 8
     Text = '0'
   end
   object Label1: TLabel
@@ -167,7 +160,7 @@ object SearchForm: TSearchForm
     Top = 56
     Width = 356
     ItemHeight = 0
-    TabOrder = 10
+    TabOrder = 9
     Text = 'cmbDirectory'
   end
   object RadioGroupResultMode: TRadioGroup
@@ -186,7 +179,7 @@ object SearchForm: TSearchForm
     ChildSizing.ControlsPerLine = 1
     ClientHeight = 64
     ClientWidth = 184
-    TabOrder = 11
+    TabOrder = 10
     object rbCellOnly: TRadioButton
       Left = 6
       Height = 21
@@ -213,6 +206,27 @@ object SearchForm: TSearchForm
       TabOrder = 2
     end
   end
+  object cmbEdit: TComboBox
+    Left = 112
+    Height = 36
+    Top = 8
+    Width = 400
+    ItemHeight = 0
+    TabOrder = 11
+    Text = 'cmbEdit'
+  end
+  object cbTrim: TCheckBox
+    Left = 16
+    Height = 23
+    Top = 32
+    Width = 58
+    Caption = 'Trim'
+    Checked = True
+    State = cbChecked
+    TabOrder = 12
+  end
   object SelectDirectoryDialog1: TSelectDirectoryDialog
+    Left = 416
+    Top = 160
   end
 end

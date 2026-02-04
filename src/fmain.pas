@@ -457,7 +457,9 @@ begin
     Exit;
   end;
 
-  // Remember directory for next search + next app start
+  // Remember directory and Query for next search + next app start
+  AppPrefs.LastQuery := Crit.QueryText;
+  AppPrefs.AddRecentQuery(Crit.QueryText);
   AppPrefs.LastSearchDirectory := Crit.Directory;
   AppPrefs.AddRecentDirectory(Crit.Directory);
   AppPrefs.Save;
